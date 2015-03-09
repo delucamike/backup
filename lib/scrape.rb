@@ -348,10 +348,10 @@ class Scrape
     end
 
     # It's not necessary to scrape finished matches that were scraped more than two days ago
-    if Match.exists?(['url = :url AND updated_at >= :updated_at', url: match_url, updated_at: 2.days.ago])
-      $logger.info "Match already exists and was scraped 2 days ago"
-      return
-    end
+    # if Match.exists?(['url = :url AND updated_at >= :updated_at', url: match_url, updated_at: 2.days.ago])
+    #  $logger.info "Match already exists and was scraped 2 days ago"
+    #  return
+   # end
 
     resp = @a.try do |scr|
       scr.get(match_url)
@@ -432,7 +432,7 @@ class Scrape
       team1_stat.save!
       
       team2_stat.score = ps.css('.boxscore > span.score').last.text.strip
-      team2_stat.possession = ps.css('h5[class="sports-hd"]').select{|h| h.text == 'Possession'}.first.next_element.css('> span').last.text.strip.to_f if ps.css('h5[class="sports-hd"]').select{|h| h.text == 'Possession'}.first
+      team2_stat.possession = ps.css('h5[class="sports-hd"]').select{|h| h.text == 'Possession'}.first.next_element.css('> span').last.text.strip.to_f if ps.css('h5[class="sports-hd"]').select{|h| h.text == 'Possession'}.last
       team2_stat.pass_accuracy = ps.css('h5[class="sports-hd"]').select{|h| h.text == 'Pass Accuracy'}.first.next_element.css('> span').last.text.strip.to_f if ps.css('h5[class="sports-hd"]').select{|h| h.text == 'Pass Accuracy'}.first
       team2_stat.tackle_success = ps.css('h5[class="sports-hd"]').select{|h| h.text.downcase == 'tackle success'}.first.next_element.css('> span').last.text.strip.to_f if ps.css('h5[class="sports-hd"]').select{|h| h.text.downcase == 'tackle success'}.first
       team2_stat.shots = ps.css('li[class="bar-chart  sports-mod-row-seperator"] span[class="stat-heading sports-hd"]').select{|e| e.text == 'Shots'}.first.next_element.text.strip.to_f if ps.css('li[class="bar-chart  sports-mod-row-seperator"] span[class="stat-heading sports-hd"]').select{|e| e.text == 'Shots'}.first
